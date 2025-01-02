@@ -1,0 +1,270 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #121212; /* Dark grey background */
+    color: #e0e0e0; /* Light grey text */
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px; /* Added padding around the page */
+}
+
+/* Heading styles */
+h1, h2 {
+    color: #1e90ff; /* Blue color for headings */
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+/* Container styling */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    max-width: 1400px; /* Increased max-width for a wider container */
+    margin: 0 auto; /* Center align container */
+    padding: 40px 40px; /* Added more padding */
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #222222; /* Blackish background */
+    padding: 50px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 1200px; /* Widened the form */
+    margin: 0 auto; /* Center align form */
+}
+
+/* Image Gallery */
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Increased minimum column size */
+    gap: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.image-item {
+    background-color: #333333; /* Dark background for images */
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Image display */
+.image-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px; /* Increased spacing */
+}
+
+/* Flexbox for arranging checkboxes side by side */
+.checkbox-container {
+    display: flex;
+    justify-content: space-between; /* Ensure equal spacing between P and L checkboxes */
+    margin-top: 10px;
+    width: 100%;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Increased space between checkboxes */
+    flex: 1;
+    align-items: flex-start;
+    margin-right: 20px; /* Space between P and L checkboxes */
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-size: 16px; /* Increased font size for better readability */
+    color: #c1c1c1; /* Light grey for labels */
+    cursor: pointer; /* Pointer cursor for checkboxes */
+}
+
+/* Style for checkboxes to make them larger and prettier */
+input[type="checkbox"] {
+    width: 25px; /* Increased size of the checkbox */
+    height: 25px; /* Increased size of the checkbox */
+    border-radius: 5px; /* Rounded corners for checkboxes */
+    background-color: #444444; /* Darker background for checkboxes */
+    accent-color: #1e90ff; /* Blue accent for the checkboxes */
+    border: 2px solid #333333; /* Dark border */
+    transition: all 0.3s ease; /* Smooth transition for hover and checked states */
+}
+
+input[type="checkbox"]:hover {
+    background-color: #666666; /* Lighter background on hover */
+    transform: scale(1.1); /* Slightly larger on hover */
+}
+
+input[type="checkbox"]:checked {
+    background-color: #1e90ff; /* Blue background when checked */
+    border-color: #1e90ff; /* Blue border when checked */
+}
+
+/* Navigation Section */
+.navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+input[type="text"], input[type="number"] {
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 4px;
+    border: 1px solid #444444;
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    font-size: 16px; /* Increased font size for better readability */
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Buttons */
+button {
+    padding: 12px 25px;
+    background-color: #1e90ff; /* Blue button */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0073e6; /* Lighter blue on hover */
+}
+
+/* Form Layout for No Link Page */
+form {
+    width: 100%;
+    max-width: 600px;
+    margin-top: 30px;
+}
+
+/* No Link Page Styling */
+form label {
+    margin-bottom: 12px;
+    font-size: 18px;
+    color: #c1c1c1;
+}
+
+form input[type="number"] {
+    width: 100%;
+    max-width: 350px;
+    padding: 12px;
+    background-color: #333333;
+    border: 1px solid #444444;
+    border-radius: 5px;
+    color: #e0e0e0;
+}
+
+form button {
+    margin-top: 25px;
+    width: 100%;
+    max-width: 160px;
+}
+/* Highlight selected image */
+.image-item img {
+    transition: border 0.3s ease; /* Smooth transition for border changes */
+}
+
+/* Clear Selection Button */
+.clear-btn {
+    padding: 8px 12px;
+    background-color: #1e90ff; /* Blue button */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.clear-btn:hover {
+    background-color: #0073e6; /* Lighter blue on hover */
+}
+/* Product Name Section Styling */
+.product-name-section {
+    margin: 15px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.product-label {
+    font-size: 1.2em;
+    color: #0099ff;
+    margin-bottom: 5px;
+}
+
+.product-input {
+    padding: 10px;
+    width: 100%;
+    max-width: 400px;
+    font-size: 1em;
+    border: 2px solid #333;
+    border-radius: 5px;
+    background-color: #222;
+    color: #fff;
+}
+
+.product-input:focus {
+    outline: none;
+    border-color: #0099ff;
+    box-shadow: 0 0 8px #0099ff;
+}
+#grouped-images {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+}
+
+.group {
+    margin-bottom: 30px;
+    padding: 10px;
+    border: 1px solid #2979ff;
+    border-radius: 5px;
+}
+
+.group img {
+    margin: 5px;
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+}
+
+.group img:hover {
+    transform: scale(1.1);
+}
+
+h3 {
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}

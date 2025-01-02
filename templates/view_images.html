@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Images</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Annopett Links Workspace</h1>
+        <h2>Product Name: {{ product_name }}</h2> <!-- Displays the product name -->
+        <h3>Images for Row {{ current_row }}</h3>
+        <form action="/view_images" method="POST">
+            <div class="image-gallery">
+                {% for image in images %}
+                    <div class="image-item">
+                        <img src="{{ image }}" alt="Image" class="image">
+                        <div class="checkbox-container">                
+                            <label><input type="checkbox" name="{{ image }}" value="p1"> P1</label>
+                            <label><input type="checkbox" name="{{ image }}" value="p2"> P2</label>
+                            <label><input type="checkbox" name="{{ image }}" value="p3"> P3</label>
+                            <label><input type="checkbox" name="{{ image }}" value="p4"> P4</label>
+                            <label><input type="checkbox" name="{{ image }}" value="p5"> P5</label>
+                            <label><input type="checkbox" name="{{ image }}" value="l1"> L1</label>
+                            <label><input type="checkbox" name="{{ image }}" value="l2"> L2</label>
+                            <label><input type="checkbox" name="{{ image }}" value="l3"> L3</label>
+                            <label><input type="checkbox" name="{{ image }}" value="l4"> L4</label>
+                            <label><input type="checkbox" name="{{ image }}" value="l5"> L5</label>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit">Next</button>
+            <div class="navigation">
+                <label for="row_navigation">Go to Row (optional):</label>
+                <input type="text" id="row_navigation" name="row_navigation" placeholder="Row number">
+                <button type="submit" name="navigate_to_row">Go</button>
+            </div>
+            
+        </form>
+        <div class="navigation-buttons">
+            <a href="{{ url_for('view_images', action='back') }}" class="button">Back</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const imageItems = document.querySelectorAll('.image-item');
+            imageItems.forEach(imageItem => {
+                const checkboxes = imageItem.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.checked) {
+                            checkboxes.forEach(otherCheckbox => {
+                                if (otherCheckbox !== checkbox) {
+                                    otherCheckbox.checked = false;
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

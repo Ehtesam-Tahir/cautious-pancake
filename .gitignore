@@ -1,0 +1,19 @@
+# Exclude credentials file
+credentials.json
+
+.env
+service_account.json
+sheet_ids.json
+
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+.env/
+
+# Other unnecessary files
+*.log
