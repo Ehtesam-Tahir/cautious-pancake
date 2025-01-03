@@ -9,7 +9,12 @@ from google.oauth2.service_account import Credentials
 from dotenv import load_dotenv
 from PIL import Image
 from io import BytesIO
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -33,7 +38,31 @@ current_row = 2
 EXCLUDE_KEYWORDS = ["logo", "banner", "icon", "advert", "placeholder", "blank"]
 VALID_FORMATS = (".jpg", ".jpeg", ".png", ".webp")
 MIN_WIDTH, MIN_HEIGHT = 200, 200  # Minimum dimensions for images
-MAX_THREADS = 10  # Maximum number of concurrent threads
+MAX_THREADS = 20  # Increased to optimize concurrent requests
+
+
+def fetch_with_retries(url, retries=3, delay=3, headers=None, proxies=None):
+    """Fetch the URL with retry logic."""
+    for attempt in range(retries):
+        try:
+            response = requests.get(url, headers=headers, proxies=proxies, timeout=8, allow_redirects=True)
+            response.raise_for_status()
+            return response
+        except requests.RequestException as e:
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                return None
+
+
+def setup_selenium_driver():
+    """Set up the Selenium WebDriver for browser-based scraping."""
+    options = Options()
+    options.add_argument("--headless")  # Run in headless mode for better performance
+    options.add_argument("--no-sandbox")  # Ensures it runs faster in environments like Docker
+    options.add_argument("--disable-gpu")  # Reduces resource usage
+    driver = webdriver.Chrome(options=options)
+    return driver
 
 
 def is_valid_image(url, headers):
@@ -41,11 +70,11 @@ def is_valid_image(url, headers):
     Checks if an image URL is valid and meets size requirements.
     """
     try:
-        response = requests.get(url, headers=headers, timeout=5)
-        response.raise_for_status()
-        image = Image.open(BytesIO(response.content))
-        if image.width >= MIN_WIDTH and image.height >= MIN_HEIGHT:
-            return url
+        response = fetch_with_retries(url, retries=2, delay=3, headers=headers)
+        if response:
+            image = Image.open(BytesIO(response.content))
+            if image.width >= MIN_WIDTH and image.height >= MIN_HEIGHT:
+                return url
     except Exception:
         pass
     return None
@@ -58,21 +87,34 @@ def parse_img_tags(link):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
-    try:
-        response = requests.get(link, headers=headers, timeout=10)
-        response.raise_for_status()
+
+    # Try to fetch the page using requests with retry logic
+    response = fetch_with_retries(link, retries=2, delay=3, headers=headers)
+    
+    # If requests fail, fall back to using Selenium for JavaScript-heavy pages
+    if response is None:
+        driver = setup_selenium_driver()
+        driver.get(link)
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "img")))
+        page_source = driver.page_source
+        driver.quit()
+        soup = BeautifulSoup(page_source, 'html.parser')
+    else:
         soup = BeautifulSoup(response.text, "html.parser")
-        img_tags = soup.find_all("img")
-        img_urls = [urljoin(link, img.get("src")) for img in img_tags if img.get("src")]
 
-        # Use threading to validate images concurrently
-        with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
-            results = list(executor.map(lambda url: is_valid_image(url, headers), img_urls))
+    img_tags = soup.find_all("img")
+    img_urls = [urljoin(link, img.get("src")) for img in img_tags if img.get("src")]
 
-        return [url for url in results if url]
-    except requests.RequestException as e:
-        print(f"Error while fetching {link}: {e}")
-        return []
+    # Use threading to validate images concurrently
+    with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+        futures = {executor.submit(is_valid_image, url, headers): url for url in img_urls}
+        valid_images = []
+        for future in as_completed(futures):
+            img_url = future.result()
+            if img_url:
+                valid_images.append(img_url)
+
+    return valid_images
 
 
 @app.route('/')
@@ -158,4 +200,4 @@ def no_link():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)
